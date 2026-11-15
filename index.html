@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grand Palace Hotel | Luxury Stay & Management System</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Playfair Display -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        navy: {
+                            800: '#1a2a3a',
+                            900: '#121a22',
+                        },
+                        gold: {
+                            400: '#d4b075',
+                            500: '#c59d5f',
+                            600: '#a67f43',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hero-bg {
+            background: linear-gradient(rgba(18, 26, 34, 0.72), rgba(18, 26, 34, 0.78)),
+                        url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+        }
+        @media print {
+            body * { visibility: hidden; }
+            #receipt-modal-content, #receipt-modal-content * { visibility: visible; }
+            #receipt-modal-content { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+
+    <!-- Toast Notification Banner (Replaces alert()) -->
+    <div id="toast-container" class="fixed top-20 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="bg-navy-800 text-white sticky top-0 z-40 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="#" onclick="navigateTo('home')" class="flex items-center gap-2 text-xl sm:text-2xl font-serif font-bold tracking-wider text-gold-500">
+                    <i class="fa-solid fa-crown text-gold-500"></i>
+                    <span>GRAND PALACE <span class="text-white font-sans font-light">HOTEL</span></span>
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-6" id="desktop-nav">
+                    <button onclick="navigateTo('home')" class="nav-btn hover:text-gold-400 transition font-medium">Home</button>
+                    <button onclick="navigateTo('rooms')" class="nav-btn hover:text-gold-400 transition font-medium">Rooms & Suites</button>
+                    <a href="#facilities" onclick="navigateTo('home')" class="hover:text-gold-400 transition font-medium">Facilities</a>
+                    <a href="#contact" class="hover:text-gold-400 transition font-medium">Contact</a>
+                    <div id="auth-nav-desktop" class="flex items-center gap-3 pl-4 border-l border-slate-600">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+
+                <!-- Mobile Hamburger -->
+                <div class="md:hidden flex items-center">
+                    <button onclick="toggleMobileMenu()" class="p-2 rounded-lg text-slate-200 hover:bg-navy-900 focus:outline-none">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-navy-900 px-4 pt-2 pb-4 space-y-2 border-t border-slate-700">
+            <button onclick="navigateTo('home'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 rounded hover:bg-navy-800">Home</button>
+            <button onclick="navigateTo('rooms'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 rounded hover:bg-navy-800">Rooms & Suites</button>
+            <div id="auth-nav-mobile" class="pt-2 border-t border-slate-700 space-y-2"></div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow">
+
+        <!-- ==================== 1. HOME VIEW ==================== -->
+        <section id="view-home" class="page-view">
+            <!-- Hero -->
+            <div class="hero-bg text-white py-24 sm:py-32 px-4 text-center">
+                <div class="max-w-3xl mx-auto">
+                    <span class="uppercase tracking-widest text-gold-400 text-xs sm:text-sm font-semibold">Bengaluru's Premier 5-Star Sanctuary</span>
+                    <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl font-bold mt-3 mb-6 leading-tight">Experience Timeless Luxury & Comfort</h1>
+                    <p class="text-slate-200 text-base sm:text-lg mb-8 leading-relaxed">
+                        Nestled in the heart of Bengaluru, Grand Palace Hotel offers world-class hospitality, curated dining, and serene accommodations tailored for discerning business and leisure travelers.
+                    </p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <button onclick="navigateTo('rooms')" class="bg-gold-500 hover:bg-gold-600 text-white font-semibold px-8 py-3.5 rounded-lg shadow-lg transition transform hover:-translate-y-0.5">
+                            Explore Available Rooms
+                        </button>
+                        <button onclick="quickDemoLogin('CUSTOMER')" class="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 text-white font-semibold px-6 py-3.5 rounded-lg transition">
+                            <i class="fa-solid fa-user-check mr-2 text-gold-400"></i>Demo Guest Login
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Room Categories Showcase -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div class="text-center mb-12">
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-navy-800">Our Room Categories</h2>
+                    <p class="text-slate-500 mt-2">Four distinct tiers of comfort designed to elevate your stay</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Single -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition flex flex-col">
+                        <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80" onerror="this.src='https://placehold.co/600x400/1a2a3a/c59d5f?text=Single+Room'" alt="Single Room" class="h-48 w-full object-cover">
+                        <div class="p-5 flex-grow flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <h3 class="font-bold text-lg text-navy-800">Single Room</h3>
+                                    <span class="text-gold-600 font-bold text-sm">₹2,500/nt</span>
+                                </div>
+                                <p class="text-slate-600 text-sm mb-4">Ideal for solo business travelers with high-speed Wi-Fi and ergonomic workspace.</p>
+                            </div>
+                            <button onclick="filterRoomsFromHome('Single Room')" class="w-full py-2.5 bg-navy-800 hover:bg-navy-900 text-white text-sm font-semibold rounded-lg transition">View Single Rooms</button>
+                        </div>
+                    </div>
+
+                    <!-- Double -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition flex flex-col">
+                        <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=600&q=80" onerror="this.src='https://placehold.co/600x400/1a2a3a/c59d5f?text=Double+Room'" alt="Double Room" class="h-48 w-full object-cover">
+                        <div class="p-5 flex-grow flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <h3 class="font-bold text-lg text-navy-800">Double Room</h3>
+                                    <span class="text-gold-600 font-bold text-sm">₹4,200/nt</span>
+                                </div>
+                                <p class="text-slate-600 text-sm mb-4">Spacious king-size comfort with private balcony and complimentary breakfast.</p>
+                            </div>
+                            <button onclick="filterRoomsFromHome('Double Room')" class="w-full py-2.5 bg-navy-800 hover:bg-navy-900 text-white text-sm font-semibold rounded-lg transition">View Double Rooms</button>
+                        </div>
+                    </div>
+
+                    <!-- Deluxe -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition flex flex-col">
+                        <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80" onerror="this.src='https://placehold.co/600x400/1a2a3a/c59d5f?text=Deluxe+Room'" alt="Deluxe Room" class="h-48 w-full object-cover">
+                        <div class="p-5 flex-grow flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <h3 class="font-bold text-lg text-navy-800">Deluxe Room</h3>
+                                    <span class="text-gold-600 font-bold text-sm">₹6,800/nt</span>
+                                </div>
+                                <p class="text-slate-600 text-sm mb-4">Panoramic skyline views, luxury bath amenities, and executive lounge privileges.</p>
+                            </div>
+                            <button onclick="filterRoomsFromHome('Deluxe Room')" class="w-full py-2.5 bg-navy-800 hover:bg-navy-900 text-white text-sm font-semibold rounded-lg transition">View Deluxe Rooms</button>
+                        </div>
+                    </div>
+
+                    <!-- Suite -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition flex flex-col">
+                        <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=600&q=80" onerror="this.src='https://placehold.co/600x400/1a2a3a/c59d5f?text=Suite+Room'" alt="Suite Room" class="h-48 w-full object-cover">
+                        <div class="p-5 flex-grow flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <h3 class="font-bold text-lg text-navy-800">Suite Room</h3>
+                                    <span class="text-gold-600 font-bold text-sm">₹11,500/nt</span>
+                                </div>
+                                <p class="text-slate-600 text-sm mb-4">Opulent living area, private jacuzzi, and dedicated 24/7 concierge butler service.</p>
+                            </div>
+                            <button onclick="filterRoomsFromHome('Suite Room')" class="w-full py-2.5 bg-navy-800 hover:bg-navy-900 text-white text-sm font-semibold rounded-lg transition">View Suite Rooms</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hotel Facilities -->
+            <div id="facilities" class="bg-white py-16 border-t border-slate-200">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-12">
+                        <h2 class="font-serif text-3xl sm:text-4xl font-bold text-navy-800">World-Class Facilities</h2>
+                        <p class="text-slate-500 mt-2">Curated amenities for relaxation, productivity, and fine dining</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="p-6 rounded-xl bg-slate-50 border border-slate-100 shadow-sm">
+                            <div class="w-12 h-12 rounded-lg bg-gold-500/15 text-gold-600 flex items-center justify-center text-xl mb-4">
+                                <i class="fa-solid fa-water-ladder"></i>
+                            </div>
+                            <h3 class="font-bold text-lg text-navy-800 mb-2">Infinity Pool & Wellness Spa</h3>
+                            <p class="text-slate-600 text-sm">Unwind at our rooftop temperature-controlled infinity pool and rejuvenating Ayurvedic spa.</p>
+                        </div>
+                        <div class="p-6 rounded-xl bg-slate-50 border border-slate-100 shadow-sm">
+                            <div class="w-12 h-12 rounded-lg bg-gold-500/15 text-gold-600 flex items-center justify-center text-xl mb-4">
+                                <i class="fa-solid fa-utensils"></i>
+                            </div>
+                            <h3 class="font-bold text-lg text-navy-800 mb-2">Palace Fine Dining</h3>
+                            <p class="text-slate-600 text-sm">Savor global gourmet cuisine and authentic regional delicacies crafted by award-winning chefs.</p>
+                        </div>
+                        <div class="p-6 rounded-xl bg-slate-50 border border-slate-100 shadow-sm">
+                            <div class="w-12 h-12 rounded-lg bg-gold-500/15 text-gold-600 flex items-center justify-center text-xl mb-4">
+                                <i class="fa-solid fa-bell-concierge"></i>
+                            </div>
+                            <h3 class="font-bold text-lg text-navy-800 mb-2">24/7 Concierge & Gigabit Wi-Fi</h3>
+                            <p class="text-slate-600 text-sm">Seamless high-speed fiber internet, chauffeur airport transfers, and round-the-clock room service.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 2. ROOMS & BOOKING CATALOG VIEW ==================== -->
+        <section id="view-rooms" class="page-view hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center mb-8">
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-navy-800">Rooms & Suites Inventory</h2>
+                <p class="text-slate-500 mt-2">Select a category below and reserve your room with instant confirmation</p>
+            </div>
+
+            <!-- Category Filter Pills -->
+            <div class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-10" id="category-filters">
+                <button onclick="setRoomCategoryFilter('ALL')" data-cat="ALL" class="cat-pill px-5 py-2.5 rounded-full text-sm font-semibold bg-gold-500 text-white shadow transition">All Rooms</button>
+                <button onclick="setRoomCategoryFilter('Single Room')" data-cat="Single Room" class="cat-pill px-5 py-2.5 rounded-full text-sm font-semibold bg-white text-navy-800 border border-slate-200 hover:bg-slate-100 transition">Single Room</button>
+                <button onclick="setRoomCategoryFilter('Double Room')" data-cat="Double Room" class="cat-pill px-5 py-2.5 rounded-full text-sm font-semibold bg-white text-navy-800 border border-slate-200 hover:bg-slate-100 transition">Double Room</button>
+                <button onclick="setRoomCategoryFilter('Deluxe Room')" data-cat="Deluxe Room" class="cat-pill px-5 py-2.5 rounded-full text-sm font-semibold bg-white text-navy-800 border border-slate-200 hover:bg-slate-100 transition">Deluxe Room</button>
+                <button onclick="setRoomCategoryFilter('Suite Room')" data-cat="Suite Room" class="cat-pill px-5 py-2.5 rounded-full text-sm font-semibold bg-white text-navy-800 border border-slate-200 hover:bg-slate-100 transition">Suite Room</button>
+            </div>
+
+            <!-- Rooms Grid -->
+            <div id="rooms-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Populated dynamically via JS -->
+            </div>
+        </section>
+
+        <!-- ==================== 3. LOGIN & REGISTRATION VIEW ==================== -->
+        <section id="view-auth" class="page-view hidden max-w-md mx-auto px-4 py-14">
+            <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-slate-100">
+                <!-- Toggle Tabs -->
+                <div class="flex rounded-lg bg-slate-100 p-1 mb-6">
+                    <button id="tab-login" onclick="switchAuthTab('login')" class="w-1/2 py-2.5 text-sm font-semibold rounded-md bg-white text-navy-800 shadow transition">Sign In</button>
+                    <button id="tab-register" onclick="switchAuthTab('register')" class="w-1/2 py-2.5 text-sm font-semibold rounded-md text-slate-600 hover:text-navy-800 transition">Register</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+                    <h2 class="font-serif text-2xl font-bold text-navy-800 text-center">Welcome Back</h2>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                        <input type="email" id="login-email" required placeholder="ananya@example.com" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                        <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none">
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-gold-500 hover:bg-gold-600 text-white font-semibold rounded-lg shadow transition">Sign In</button>
+
+                    <!-- Quick Demo Credentials Box -->
+                    <div class="mt-4 p-3.5 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-600 space-y-2">
+                        <p class="font-semibold text-navy-800 uppercase tracking-wider">One-Click Demo Logins:</p>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" onclick="quickDemoLogin('CUSTOMER')" class="px-3 py-1.5 bg-navy-800 text-white rounded hover:bg-navy-900 transition">
+                                Guest (ananya@example.com)
+                            </button>
+                            <button type="button" onclick="quickDemoLogin('ADMIN')" class="px-3 py-1.5 bg-gold-600 text-white rounded hover:bg-gold-500 transition">
+                                Admin (admin@grandpalace.com)
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Register Form -->
+                <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+                    <h2 class="font-serif text-2xl font-bold text-navy-800 text-center">Create Guest Account</h2>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
+                        <input type="text" id="reg-name" required placeholder="Rahul Verma" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-gold-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                        <input type="email" id="reg-email" required placeholder="rahul@example.com" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-gold-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Phone Number (10 digits)</label>
+                        <input type="tel" id="reg-phone" pattern="[0-9]{10}" required placeholder="9876543210" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-gold-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Address</label>
+                        <input type="text" id="reg-address" required placeholder="Indiranagar, Bengaluru" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-gold-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Password (min 6 chars)</label>
+                        <input type="password" id="reg-password" minlength="6" required placeholder="••••••" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-gold-500 outline-none">
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-navy-800 hover:bg-navy-900 text-white font-semibold rounded-lg shadow transition">Register Account</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ==================== 4. CUSTOMER DASHBOARD VIEW ==================== -->
+        <section id="view-customer-dashboard" class="page-view hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <!-- Profile Banner -->
+            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-gold-500 mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-gold-600">Guest Portal (Customer Subclass)</span>
+                    <h2 id="cust-welcome-name" class="font-serif text-2xl sm:text-3xl font-bold text-navy-800 mt-1">Welcome</h2>
+                    <p id="cust-role-details" class="text-slate-600 text-sm mt-1"></p>
+                </div>
+                <button onclick="navigateTo('rooms')" class="bg-gold-500 hover:bg-gold-600 text-white font-semibold px-5 py-3 rounded-lg shadow transition">
+                    <i class="fa-solid fa-plus mr-2"></i>New Room Reservation
+                </button>
+            </div>
+
+            <!-- Bookings History Table -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                    <h3 class="font-bold text-lg text-navy-800">My Current & Past Reservations</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-navy-800 text-white text-sm">
+                                <th class="py-3.5 px-4">Booking ID</th>
+                                <th class="py-3.5 px-4">Room</th>
+                                <th class="py-3.5 px-4">Check-In</th>
+                                <th class="py-3.5 px-4">Check-Out</th>
+                                <th class="py-3.5 px-4">Guests</th>
+                                <th class="py-3.5 px-4">Total Amount</th>
+                                <th class="py-3.5 px-4">Status</th>
+                                <th class="py-3.5 px-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cust-bookings-tbody" class="divide-y divide-slate-200 text-sm">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 5. ADMIN DASHBOARD VIEW ==================== -->
+        <section id="view-admin-dashboard" class="page-view hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="mb-6">
+                <span class="text-xs font-bold uppercase tracking-wider text-gold-600">Administrator Portal (Admin Subclass)</span>
+                <h2 class="font-serif text-3xl font-bold text-navy-800">Hotel Operations Control Panel</h2>
+                <p id="admin-role-details" class="text-slate-600 text-sm mt-1"></p>
+            </div>
+
+            <!-- KPI Metrics -->
+            <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+                <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-navy-800">
+                    <p class="text-xs font-semibold text-slate-500 uppercase">Total Customers</p>
+                    <h3 id="stat-customers" class="text-2xl sm:text-3xl font-bold text-navy-800 mt-1">0</h3>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-gold-500">
+                    <p class="text-xs font-semibold text-slate-500 uppercase">Total Rooms</p>
+                    <h3 id="stat-rooms" class="text-2xl sm:text-3xl font-bold text-navy-800 mt-1">0</h3>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-emerald-500">
+                    <p class="text-xs font-semibold text-slate-500 uppercase">Available Rooms</p>
+                    <h3 id="stat-available" class="text-2xl sm:text-3xl font-bold text-emerald-600 mt-1">0</h3>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-rose-500">
+                    <p class="text-xs font-semibold text-slate-500 uppercase">Occupied Rooms</p>
+                    <h3 id="stat-occupied" class="text-2xl sm:text-3xl font-bold text-rose-600 mt-1">0</h3>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-indigo-500 col-span-2 lg:col-span-1">
+                    <p class="text-xs font-semibold text-slate-500 uppercase">Total Bookings</p>
+                    <h3 id="stat-bookings" class="text-2xl sm:text-3xl font-bold text-indigo-600 mt-1">0</h3>
+                </div>
+            </div>
+
+            <!-- Add New Room Form -->
+            <div class="bg-white rounded-xl shadow-md p-6 mb-8 border border-slate-100">
+                <h3 class="font-bold text-lg text-navy-800 mb-4"><i class="fa-solid fa-plus-circle text-gold-500 mr-2"></i>Add New Room to Inventory</h3>
+                <form onsubmit="handleAdminAddRoom(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+                    <input type="text" id="new-room-num" placeholder="Room # (e.g. 501)" required class="px-3 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:border-gold-500">
+                    <select id="new-room-cat" class="px-3 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:border-gold-500">
+                        <option value="Single Room">Single Room</option>
+                        <option value="Double Room">Double Room</option>
+                        <option value="Deluxe Room">Deluxe Room</option>
+                        <option value="Suite Room">Suite Room</option>
+                    </select>
+                    <input type="number" id="new-room-price" min="500" step="100" placeholder="Price / Night (₹)" required class="px-3 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:border-gold-500">
+                    <select id="new-room-status" class="px-3 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:border-gold-500">
+                        <option value="AVAILABLE">AVAILABLE</option>
+                        <option value="MAINTENANCE">MAINTENANCE</option>
+                    </select>
+                    <input type="text" id="new-room-desc" placeholder="Room description" required class="px-3 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:border-gold-500">
+                    <button type="submit" class="bg-gold-500 hover:bg-gold-600 text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition">Add Room</button>
+                </form>
+            </div>
+
+            <!-- Manage Rooms Table -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                <div class="px-6 py-4 border-b border-slate-200">
+                    <h3 class="font-bold text-lg text-navy-800">Manage Hotel Rooms</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-navy-800 text-white text-sm">
+                                <th class="py-3 px-4">Room #</th>
+                                <th class="py-3 px-4">Category</th>
+                                <th class="py-3 px-4">Price / Night</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4">Change Status</th>
+                                <th class="py-3 px-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-rooms-tbody" class="divide-y divide-slate-200 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Manage All Reservations Table -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                <div class="px-6 py-4 border-b border-slate-200">
+                    <h3 class="font-bold text-lg text-navy-800">Manage All Reservations</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-navy-800 text-white text-sm">
+                                <th class="py-3 px-4">Booking ID</th>
+                                <th class="py-3 px-4">Guest Name</th>
+                                <th class="py-3 px-4">Room</th>
+                                <th class="py-3 px-4">Dates</th>
+                                <th class="py-3 px-4">Amount</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-bookings-tbody" class="divide-y divide-slate-200 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Manage Customers Table -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-200">
+                    <h3 class="font-bold text-lg text-navy-800">Registered Customers</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-navy-800 text-white text-sm">
+                                <th class="py-3 px-4">ID</th>
+                                <th class="py-3 px-4">Full Name</th>
+                                <th class="py-3 px-4">Email</th>
+                                <th class="py-3 px-4">Phone</th>
+                                <th class="py-3 px-4">Address</th>
+                                <th class="py-3 px-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-customers-tbody" class="divide-y divide-slate-200 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== MODAL 1: BOOKING & PAYMENT ==================== -->
+    <div id="booking-modal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('booking-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-2">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <h3 class="font-serif text-2xl font-bold text-navy-800" id="modal-room-title">Reserve Room</h3>
+            <p class="text-sm text-slate-500 mb-5" id="modal-room-subtitle"></p>
+
+            <form onsubmit="handleConfirmBookingAndPay(event)" class="space-y-4">
+                <input type="hidden" id="booking-room-id">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Check-In Date</label>
+                        <input type="date" id="book-checkin" required onchange="recalculateBookingCost()" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:border-gold-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Check-Out Date</label>
+                        <input type="date" id="book-checkout" required onchange="recalculateBookingCost()" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:border-gold-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Number of Guests</label>
+                    <input type="number" id="book-guests" min="1" max="4" value="2" required class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:border-gold-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Simulated Payment Method</label>
+                    <select id="book-payment-method" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm outline-none focus:border-gold-500">
+                        <option value="Credit / Debit Card">Credit / Debit Card</option>
+                        <option value="UPI / QR Pay">UPI / QR Pay</option>
+                        <option value="Net Banking">Net Banking</option>
+                        <option value="Pay at Hotel Desk">Pay at Hotel Desk</option>
+                    </select>
+                </div>
+
+                <!-- Live Tariff Summary -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex justify-between items-center">
+                    <div>
+                        <p class="text-xs text-slate-500">Stay Duration</p>
+                        <p id="book-nights-label" class="font-bold text-navy-800">0 Nights</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs text-slate-500">Total Payable</p>
+                        <p id="book-total-label" class="text-xl font-bold text-gold-600">₹0.00</p>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 bg-gold-500 hover:bg-gold-600 text-white font-semibold rounded-lg shadow-md transition">
+                    <i class="fa-solid fa-lock mr-2"></i>Confirm Booking & Pay Now
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 2: OFFICIAL PAYMENT RECEIPT ==================== -->
+    <div id="receipt-modal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div id="receipt-modal-content" class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border-t-8 border-gold-500 relative">
+            <button onclick="closeModal('receipt-modal')" class="no-print absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-2">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <span id="rec-badge" class="px-3 py-1 rounded-full text-xs font-bold uppercase bg-emerald-100 text-emerald-800">RESERVATION CONFIRMED</span>
+                <h3 class="font-serif text-2xl font-bold text-navy-800 mt-2">Official Payment Receipt</h3>
+                <p class="text-xs text-slate-500">Grand Palace Hotel • 100 Residency Road, Bengaluru</p>
+            </div>
+
+            <div class="border-t border-b border-slate-200 py-4 space-y-2.5 text-sm" id="receipt-details-body">
+                <!-- Populated dynamically -->
+            </div>
+
+            <div class="no-print mt-6 flex gap-3">
+                <button onclick="window.print()" class="w-1/2 py-2.5 bg-navy-800 hover:bg-navy-900 text-white font-semibold rounded-lg transition">
+                    <i class="fa-solid fa-print mr-2"></i>Print Receipt
+                </button>
+                <button onclick="closeModal('receipt-modal')" class="w-1/2 py-2.5 bg-gold-500 hover:bg-gold-600 text-white font-semibold rounded-lg transition">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-navy-900 text-slate-300 py-10 px-4 mt-auto">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+            <div>
+                <h4 class="font-serif text-lg font-bold text-gold-500 mb-2">GRAND PALACE HOTEL</h4>
+                <p class="text-slate-400">Hospitality redefined. Powered by Object-Oriented Architecture (Encapsulation, Inheritance, Polymorphism & Abstraction).</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-2">Contact & Location</h4>
+                <p><i class="fa-solid fa-location-dot text-gold-500 mr-2"></i>100 Residency Road, Bengaluru 560025</p>
+                <p class="mt-1"><i class="fa-solid fa-phone text-gold-500 mr-2"></i>+91 80 2222 4444</p>
+                <p class="mt-1"><i class="fa-solid fa-envelope text-gold-500 mr-2"></i>reservations@grandpalace.com</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-2">Test Credentials</h4>
+                <p class="text-slate-400">Admin: <span class="text-white">admin@grandpalace.com</span> / <span class="text-white">admin123</span></p>
+                <p class="text-slate-400 mt-1">Guest: <span class="text-white">ananya@example.com</span> / <span class="text-white">cust123</span></p>
+            </div>
+        </div>
+        <div class="text-center text-xs text-slate-500 mt-8 pt-6 border-t border-slate-800">
+            &copy; 2026 Grand Palace Hotel Management System • Java OOP Mini-Project Web Edition
+        </div>
+    </footer>
+
+    <!-- ==================== APPLICATION LOGIC (MIRRORING JAVA OOP SERVICE & DAO LAYERS) ==================== -->
+    <script>
+        // =========================================================================
+        // 1. OBJECT-ORIENTED MODEL CLASSES (Encapsulation, Inheritance, Polymorphism)
+        // =========================================================================
+        class User {
+            constructor(userId, fullName, email, password, phone, role) {
+                this.userId = userId;
+                this.fullName = fullName;
+                this.email = email;
+                this.password = password;
+                this.phone = phone;
+                this.role = role;
+            }
+            getDashboardView() { throw new Error("Abstract method must be overridden"); }
+            getRoleDetails() { return `System User: ${this.fullName}`; }
+        }
+
+        class Admin extends User {
+            constructor(userId, fullName, email, password, phone, department) {
+                super(userId, fullName, email, password, phone, "ADMIN");
+                this.department = department;
+            }
+            getDashboardView() { return "admin-dashboard"; }
+            getRoleDetails() { return `Administrator (${this.department}) • ${this.fullName}`; }
+        }
+
+        class Customer extends User {
+            constructor(userId, fullName, email, password, phone, address) {
+                super(userId, fullName, email, password, phone, "CUSTOMER");
+                this.address = address;
+            }
+            getDashboardView() { return "customer-dashboard"; }
+            getRoleDetails() { return `Valued Guest • ${this.email} • ${this.phone} • ${this.address}`; }
+        }
+
+        // =========================================================================
+        // 2. IN-MEMORY DATABASE & SEED DATA (Mirrors hotel_management MySQL DB)
+        // =========================================================================
+        const DEFAULT_STATE = {
+            users: [
+                { userId: 1, fullName: "Vikram Sharma", email: "admin@grandpalace.com", password: "admin123", phone: "9876543210", role: "ADMIN", department: "Front Office Operations" },
+                { userId: 2, fullName: "Ananya Rao", email: "ananya@example.com", password: "cust123", phone: "9123456780", role: "CUSTOMER", address: "42 MG Road, Bengaluru" }
+            ],
+            rooms: [
+                { roomId: 101, roomNumber: "101", category: "Single Room", pricePerNight: 2500, status: "AVAILABLE", description: "Cozy single room with city view, high-speed Wi-Fi, ergonomic work desk, and smart TV.", imageUrl: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=800&q=80" },
+                { roomId: 102, roomNumber: "102", category: "Single Room", pricePerNight: 2500, status: "AVAILABLE", description: "Modern solo traveler room with plush bedding, rain shower, and complimentary breakfast.", imageUrl: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80" },
+                { roomId: 201, roomNumber: "201", category: "Double Room", pricePerNight: 4200, status: "AVAILABLE", description: "Spacious double room featuring a king-size bed, private balcony, and curated mini-bar.", imageUrl: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80" },
+                { roomId: 202, roomNumber: "202", category: "Double Room", pricePerNight: 4200, status: "AVAILABLE", description: "Elegant twin/king room designed for couples or business partners with lounge seating.", imageUrl: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80" },
+                { roomId: 301, roomNumber: "301", category: "Deluxe Room", pricePerNight: 6800, status: "AVAILABLE", description: "Luxury deluxe room with panoramic skyline views, soaking tub, and executive lounge access.", imageUrl: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80" },
+                { roomId: 401, roomNumber: "401", category: "Suite Room", pricePerNight: 11500, status: "AVAILABLE", description: "Presidential suite with separate living room, private jacuzzi, and 24/7 butler service.", imageUrl: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800&q=80" }
+            ],
+            bookings: [],
+            payments: []
+        };
+
+        let db = JSON.parse(localStorage.getItem("grand_palace_db")) || JSON.parse(JSON.stringify(DEFAULT_STATE));
+        let currentUser = null;
+        let selectedRoomFilter = "ALL";
+        let activeBookingRoom = null;
+
+        function saveDB() {
+            localStorage.setItem("grand_palace_db", JSON.stringify(db));
+        }
+
+        function hydrateUserObject(raw) {
+            if (!raw) return null;
+            if (raw.role === "ADMIN") {
+                return new Admin(raw.userId, raw.fullName, raw.email, raw.password, raw.phone, raw.department);
+            }
+            return new Customer(raw.userId, raw.fullName, raw.email, raw.password, raw.phone, raw.address);
+        }
+
+        // =========================================================================
+        // 3. UI NAVIGATION & NOTIFICATIONS
+        // =========================================================================
+        function showToast(message, type = "success") {
+            const container = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            const colors = type === "error"
+                ? "bg-rose-600 text-white border-rose-800"
+                : "bg-navy-800 text-white border-gold-500";
+            toast.className = `${colors} border-l-4 px-4 py-3 rounded-lg shadow-xl text-sm font-medium pointer-events-auto transition transform duration-300 flex items-center justify-between gap-3`;
+            toast.innerHTML = `<span>${message}</span><button onclick="this.parentElement.remove()" class="text-white/70 hover:text-white"><i class="fa-solid fa-xmark"></i></button>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        function navigateTo(viewName) {
+            document.querySelectorAll(".page-view").forEach(el => el.classList.add("hidden"));
+            const target = document.getElementById(`view-${viewName}`);
+            if (target) target.classList.remove("hidden");
+
+            if (viewName === "rooms") renderRoomsCatalog();
+            if (viewName === "customer-dashboard") renderCustomerDashboard();
+            if (viewName === "admin-dashboard") renderAdminDashboard();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById("mobile-menu").classList.toggle("hidden");
+        }
+
+        function updateNavbarAuth() {
+            const desktopNav = document.getElementById("auth-nav-desktop");
+            const mobileNav = document.getElementById("auth-nav-mobile");
+
+            if (!currentUser) {
+                desktopNav.innerHTML = `
+                    <button onclick="navigateTo('auth'); switchAuthTab('login')" class="hover:text-gold-400 transition font-medium">Login</button>
+                    <button onclick="navigateTo('auth'); switchAuthTab('register')" class="bg-gold-500 hover:bg-gold-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Register</button>
+                `;
+                mobileNav.innerHTML = `
+                    <button onclick="navigateTo('auth'); switchAuthTab('login'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 rounded hover:bg-navy-800">Login</button>
+                    <button onclick="navigateTo('auth'); switchAuthTab('register'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 rounded bg-gold-500 text-white font-semibold">Register</button>
+                `;
+            } else {
+                const dashView = currentUser.getDashboardView();
+                desktopNav.innerHTML = `
+                    <button onclick="navigateTo('${dashView}')" class="text-gold-400 hover:text-white font-semibold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-gauge"></i> Dashboard (${currentUser.fullName.split(" ")[0]})
+                    </button>
+                    <button onclick="handleLogout()" class="bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-1.5 rounded-lg text-sm font-semibold transition">Logout</button>
+                `;
+                mobileNav.innerHTML = `
+                    <button onclick="navigateTo('${dashView}'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 rounded text-gold-400 font-semibold">Dashboard (${currentUser.fullName})</button>
+                    <button onclick="handleLogout(); toggleMobileMenu()" class="block w-full text-left py-2 px-3 rounded bg-rose-600 text-white font-semibold">Logout</button>
+                `;
+            }
+        }
+
+        // =========================================================================
+        // 4. AUTHENTICATION HANDLERS (AuthServlet Logic)
+        // =========================================================================
+        function switchAuthTab(tab) {
+            const loginForm = document.getElementById("form-login");
+            const regForm = document.getElementById("form-register");
+            const tabLogin = document.getElementById("tab-login");
+            const tabReg = document.getElementById("tab-register");
+
+            if (tab === "login") {
+                loginForm.classList.remove("hidden");
+                regForm.classList.add("hidden");
+                tabLogin.className = "w-1/2 py-2.5 text-sm font-semibold rounded-md bg-white text-navy-800 shadow transition";
+                tabReg.className = "w-1/2 py-2.5 text-sm font-semibold rounded-md text-slate-600 hover:text-navy-800 transition";
+            } else {
+                regForm.classList.remove("hidden");
+                loginForm.classList.add("hidden");
+                tabReg.className = "w-1/2 py-2.5 text-sm font-semibold rounded-md bg-white text-navy-800 shadow transition";
+                tabLogin.className = "w-1/2 py-2.5 text-sm font-semibold rounded-md text-slate-600 hover:text-navy-800 transition";
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById("login-email").value.trim().toLowerCase();
+            const pass = document.getElementById("login-password").value;
+
+            const found = db.users.find(u => u.email.toLowerCase() === email && u.password === pass);
+            if (!found) {
+                showToast("Invalid email or password.", "error");
+                return;
+            }
+            currentUser = hydrateUserObject(found);
+            updateNavbarAuth();
+            showToast(`Welcome back, ${currentUser.fullName}!`);
+            // Polymorphic dispatch to Admin or Customer dashboard
+            navigateTo(currentUser.getDashboardView());
+        }
+
+        function quickDemoLogin(role) {
+            const target = db.users.find(u => u.role === role);
+            if (target) {
+                currentUser = hydrateUserObject(target);
+                updateNavbarAuth();
+                showToast(`Signed in as Demo ${role === "ADMIN" ? "Administrator" : "Guest"} (${currentUser.fullName})`);
+                navigateTo(currentUser.getDashboardView());
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const fullName = document.getElementById("reg-name").value.trim();
+            const email = document.getElementById("reg-email").value.trim().toLowerCase();
+            const phone = document.getElementById("reg-phone").value.trim();
+            const address = document.getElementById("reg-address").value.trim();
+            const password = document.getElementById("reg-password").value;
+
+            if (db.users.some(u => u.email.toLowerCase() === email)) {
+                showToast("Email is already registered. Please sign in.", "error");
+                return;
+            }
+
+            const newUser = {
+                userId: Date.now(),
+                fullName,
+                email,
+                password,
+                phone,
+                role: "CUSTOMER",
+                address
+            };
+            db.users.push(newUser);
+            saveDB();
+
+            currentUser = hydrateUserObject(newUser);
+            updateNavbarAuth();
+            showToast("Account created successfully! Welcome to Grand Palace Hotel.");
+            navigateTo(currentUser.getDashboardView());
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            updateNavbarAuth();
+            showToast("Logged out successfully.");
+            navigateTo("home");
+        }
+
+        // =========================================================================
+        // 5. ROOM CATALOG & FILTERING (RoomServlet Logic)
+        // =========================================================================
+        function filterRoomsFromHome(category) {
+            selectedRoomFilter = category;
+            navigateTo("rooms");
+        }
+
+        function setRoomCategoryFilter(category) {
+            selectedRoomFilter = category;
+            renderRoomsCatalog();
+        }
+
+        function renderRoomsCatalog() {
+            // Update active pill styling
+            document.querySelectorAll(".cat-pill").forEach(btn => {
+                if (btn.dataset.cat === selectedRoomFilter) {
+                    btn.className = "cat-pill px-5 py-2.5 rounded-full text-sm font-semibold bg-gold-500 text-white shadow transition";
+                } else {
+                    btn.className = "cat-pill px-5 py-2.5 rounded-full text-sm font-semibold bg-white text-navy-800 border border-slate-200 hover:bg-slate-100 transition";
+                }
+            });
+
+            const filtered = selectedRoomFilter === "ALL"
+                ? db.rooms
+                : db.rooms.filter(r => r.category === selectedRoomFilter);
+
+            const grid = document.getElementById("rooms-grid");
+            if (filtered.length === 0) {
+                grid.innerHTML = `<p class="col-span-full text-center text-slate-500 py-10">No rooms available in this category.</p>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(room => {
+                const isAvail = room.status === "AVAILABLE";
+                const badgeClass = isAvail
+                    ? "bg-emerald-100 text-emerald-800"
+                    : room.status === "OCCUPIED"
+                        ? "bg-rose-100 text-rose-800"
+                        : "bg-amber-100 text-amber-800";
+
+                return `
+                    <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition flex flex-col border border-slate-100">
+                        <div class="relative">
+                            <img src="${room.imageUrl}" onerror="this.src='https://placehold.co/800x500/1a2a3a/c59d5f?text=Room+${room.roomNumber}'" alt="${room.category}" class="h-52 w-full object-cover">
+                            <span class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold uppercase ${badgeClass} shadow-xs">
+                                ${room.status}
+                            </span>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-baseline mb-1">
+                                    <h3 class="font-bold text-xl text-navy-800">Room #${room.roomNumber}</h3>
+                                    <span class="text-xs font-semibold uppercase tracking-wider text-gold-600">${room.category}</span>
+                                </div>
+                                <p class="text-slate-600 text-sm mt-2 mb-5 leading-relaxed">${room.description}</p>
+                            </div>
+                            <div class="pt-4 border-t border-slate-100 flex justify-between items-center">
+                                <div>
+                                    <span class="text-xl font-bold text-navy-800">₹${room.pricePerNight.toLocaleString()}</span>
+                                    <span class="text-xs text-slate-500">/ night</span>
+                                </div>
+                                ${isAvail
+                                    ? `<button onclick="openBookingModal(${room.roomId})" class="bg-gold-500 hover:bg-gold-600 text-white font-semibold px-5 py-2.5 rounded-lg text-sm shadow transition">Book Now</button>`
+                                    : `<button disabled class="bg-slate-200 text-slate-500 font-semibold px-5 py-2.5 rounded-lg text-sm cursor-not-allowed">Unavailable</button>`
+                                }
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        // =========================================================================
+        // 6. BOOKING, DOUBLE-BOOKING PREVENTION & PAYMENT (HotelServiceImpl)
+        // =========================================================================
+        function openBookingModal(roomId) {
+            if (!currentUser) {
+                showToast("Please login or register first to book a room.", "error");
+                navigateTo("auth");
+                return;
+            }
+            activeBookingRoom = db.rooms.find(r => r.roomId === roomId);
+            if (!activeBookingRoom) return;
+
+            document.getElementById("booking-room-id").value = activeBookingRoom.roomId;
+            document.getElementById("modal-room-title").textContent = `Reserve Room #${activeBookingRoom.roomNumber}`;
+            document.getElementById("modal-room-subtitle").textContent = `${activeBookingRoom.category} • ₹${activeBookingRoom.pricePerNight.toLocaleString()} per night`;
+
+            const today = new Date().toISOString().split("T")[0];
+            const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0];
+            const checkInEl = document.getElementById("book-checkin");
+            const checkOutEl = document.getElementById("book-checkout");
+
+            checkInEl.min = today;
+            checkInEl.value = today;
+            checkOutEl.min = tomorrow;
+            checkOutEl.value = tomorrow;
+
+            recalculateBookingCost();
+            document.getElementById("booking-modal").classList.remove("hidden");
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add("hidden");
+        }
+
+        function recalculateBookingCost() {
+            if (!activeBookingRoom) return;
+            const checkInVal = document.getElementById("book-checkin").value;
+            const checkOutVal = document.getElementById("book-checkout").value;
+            const nightsLabel = document.getElementById("book-nights-label");
+            const totalLabel = document.getElementById("book-total-label");
+
+            if (checkInVal && checkOutVal) {
+                const d1 = new Date(checkInVal);
+                const d2 = new Date(checkOutVal);
+                if (d2 > d1) {
+                    const nights = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
+                    const total = nights * activeBookingRoom.pricePerNight;
+                    nightsLabel.textContent = `${nights} ${nights === 1 ? "Night" : "Nights"}`;
+                    totalLabel.textContent = `₹${total.toLocaleString("en-IN", { minimumFractionDigits: 2 })}`;
+                    return;
+                }
+            }
+            nightsLabel.textContent = "0 Nights (Invalid Dates)";
+            totalLabel.textContent = "₹0.00";
+        }
+
+        function isRoomAvailableForDates(roomId, checkIn, checkOut) {
+            // Prevents double booking on overlapping confirmed date ranges
+            return !db.bookings.some(b =>
+                b.roomId === roomId &&
+                b.bookingStatus === "CONFIRMED" &&
+                !(checkOut <= b.checkIn || checkIn >= b.checkOut)
+            );
+        }
+
+        function handleConfirmBookingAndPay(e) {
+            e.preventDefault();
+            const roomId = parseInt(document.getElementById("booking-room-id").value);
+            const checkIn = document.getElementById("book-checkin").value;
+            const checkOut = document.getElementById("book-checkout").value;
+            const guests = parseInt(document.getElementById("book-guests").value);
+            const paymentMethod = document.getElementById("book-payment-method").value;
+
+            if (checkOut <= checkIn) {
+                showToast("Check-out date must be after Check-in date.", "error");
+                return;
+            }
+
+            if (!isRoomAvailableForDates(roomId, checkIn, checkOut)) {
+                showToast("Double-booking prevented: This room is already reserved for those dates.", "error");
+                return;
+            }
+
+            const nights = Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24));
+            const totalAmount = nights * activeBookingRoom.pricePerNight;
+            const bookingId = Math.floor(1000 + Math.random() * 9000);
+
+            const newBooking = {
+                bookingId,
+                userId: currentUser.userId,
+                customerName: currentUser.fullName,
+                roomId: activeBookingRoom.roomId,
+                roomNumber: activeBookingRoom.roomNumber,
+                roomCategory: activeBookingRoom.category,
+                checkIn,
+                checkOut,
+                guests,
+                totalAmount,
+                bookingStatus: "CONFIRMED"
+            };
+
+            const newPayment = {
+                paymentId: Date.now(),
+                bookingId,
+                amount: totalAmount,
+                paymentMethod,
+                transactionId: "TXN-" + Math.random().toString(36).substring(2, 10).toUpperCase(),
+                paymentStatus: "PAID",
+                paymentDate: new Date().toLocaleString()
+            };
+
+            // Update Room status to OCCUPIED
+            const roomObj = db.rooms.find(r => r.roomId === roomId);
+            if (roomObj) roomObj.status = "OCCUPIED";
+
+            db.bookings.unshift(newBooking);
+            db.payments.unshift(newPayment);
+            saveDB();
+
+            closeModal("booking-modal");
+            showToast("Reservation confirmed & payment processed!");
+            openReceiptModal(bookingId);
+
+            if (currentUser.role === "ADMIN") renderAdminDashboard();
+            else renderCustomerDashboard();
+        }
+
+        function openReceiptModal(bookingId) {
+            const booking = db.bookings.find(b => b.bookingId === bookingId);
+            const payment = db.payments.find(p => p.bookingId === bookingId);
+            if (!booking) return;
+
+            const badge = document.getElementById("rec-badge");
+            if (booking.bookingStatus === "CANCELLED") {
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase bg-rose-100 text-rose-800";
+                badge.textContent = "RESERVATION CANCELLED";
+            } else {
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase bg-emerald-100 text-emerald-800";
+                badge.textContent = "RESERVATION CONFIRMED";
+            }
+
+            document.getElementById("receipt-details-body").innerHTML = `
+                <div class="flex justify-between"><span class="text-slate-500">Booking ID:</span><span class="font-bold text-navy-800">#BK-${booking.bookingId}</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Transaction ID:</span><span class="font-mono font-semibold">${payment ? payment.transactionId : "N/A"}</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Guest Name:</span><span class="font-semibold">${booking.customerName}</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Room Assigned:</span><span class="font-semibold">Room #${booking.roomNumber} (${booking.roomCategory})</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Check-In / Out:</span><span>${booking.checkIn} to ${booking.checkOut}</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Guests:</span><span>${booking.guests}</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Payment Mode:</span><span>${payment ? payment.paymentMethod : "N/A"}</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Payment Status:</span><span class="font-bold ${payment && payment.paymentStatus === 'REFUNDED' ? 'text-rose-600' : 'text-emerald-600'}">${payment ? payment.paymentStatus : "PAID"}</span></div>
+                <div class="flex justify-between pt-3 border-t border-slate-200 text-base"><span class="font-bold text-navy-800">Total Amount:</span><span class="font-bold text-gold-600">₹${booking.totalAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span></div>
+            `;
+            document.getElementById("receipt-modal").classList.remove("hidden");
+        }
+
+        function cancelReservation(bookingId) {
+            const booking = db.bookings.find(b => b.bookingId === bookingId);
+            if (!booking || booking.bookingStatus === "CANCELLED") return;
+
+            booking.bookingStatus = "CANCELLED";
+
+            // Free up room
+            const room = db.rooms.find(r => r.roomId === booking.roomId);
+            if (room) room.status = "AVAILABLE";
+
+            // Refund payment
+            const payment = db.payments.find(p => p.bookingId === bookingId);
+            if (payment) payment.paymentStatus = "REFUNDED";
+
+            saveDB();
+            showToast(`Booking #BK-${bookingId} cancelled and payment refunded.`);
+
+            if (currentUser.role === "ADMIN") renderAdminDashboard();
+            else renderCustomerDashboard();
+        }
+
+        // =========================================================================
+        // 7. CUSTOMER & ADMIN DASHBOARDS (DashboardServlet Logic)
+        // =========================================================================
+        function renderCustomerDashboard() {
+            if (!currentUser) return;
+            document.getElementById("cust-welcome-name").textContent = `Welcome, ${currentUser.fullName}`;
+            document.getElementById("cust-role-details").textContent = currentUser.getRoleDetails();
+
+            const myBookings = db.bookings.filter(b => b.userId === currentUser.userId);
+            const tbody = document.getElementById("cust-bookings-tbody");
+
+            if (myBookings.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-slate-500">You have no bookings yet. <button onclick="navigateTo('rooms')" class="text-gold-600 font-semibold underline">Explore rooms now</button></td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = myBookings.map(b => `
+                <tr class="hover:bg-slate-50">
+                    <td class="py-3.5 px-4 font-bold text-navy-800">#BK-${b.bookingId}</td>
+                    <td class="py-3.5 px-4">Room #${b.roomNumber} (${b.roomCategory})</td>
+                    <td class="py-3.5 px-4">${b.checkIn}</td>
+                    <td class="py-3.5 px-4">${b.checkOut}</td>
+                    <td class="py-3.5 px-4">${b.guests}</td>
+                    <td class="py-3.5 px-4 font-semibold">₹${b.totalAmount.toLocaleString()}</td>
+                    <td class="py-3.5 px-4">
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold ${b.bookingStatus === 'CONFIRMED' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                            ${b.bookingStatus}
+                        </span>
+                    </td>
+                    <td class="py-3.5 px-4 flex gap-2">
+                        <button onclick="openReceiptModal(${b.bookingId})" class="px-3 py-1.5 bg-navy-800 hover:bg-navy-900 text-white rounded text-xs font-semibold">Receipt</button>
+                        ${b.bookingStatus === 'CONFIRMED'
+                            ? `<button onclick="cancelReservation(${b.bookingId})" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded text-xs font-semibold">Cancel</button>`
+                            : ''}
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        function renderAdminDashboard() {
+            if (!currentUser || currentUser.role !== "ADMIN") return;
+            document.getElementById("admin-role-details").textContent = currentUser.getRoleDetails();
+
+            const customers = db.users.filter(u => u.role === "CUSTOMER");
+            const availableCount = db.rooms.filter(r => r.status === "AVAILABLE").length;
+            const occupiedCount = db.rooms.filter(r => r.status === "OCCUPIED").length;
+
+            document.getElementById("stat-customers").textContent = customers.length;
+            document.getElementById("stat-rooms").textContent = db.rooms.length;
+            document.getElementById("stat-available").textContent = availableCount;
+            document.getElementById("stat-occupied").textContent = occupiedCount;
+            document.getElementById("stat-bookings").textContent = db.bookings.length;
+
+            // Rooms Table
+            document.getElementById("admin-rooms-tbody").innerHTML = db.rooms.map(r => `
+                <tr class="hover:bg-slate-50">
+                    <td class="py-3 px-4 font-bold text-navy-800">#${r.roomNumber}</td>
+                    <td class="py-3 px-4">${r.category}</td>
+                    <td class="py-3 px-4">₹${r.pricePerNight.toLocaleString()}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold ${r.status === 'AVAILABLE' ? 'bg-emerald-100 text-emerald-800' : r.status === 'OCCUPIED' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'}">
+                            ${r.status}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4">
+                        <select onchange="handleAdminUpdateRoomStatus(${r.roomId}, this.value)" class="px-2.5 py-1 border border-slate-300 rounded text-xs bg-white">
+                            <option value="AVAILABLE" ${r.status === 'AVAILABLE' ? 'selected' : ''}>AVAILABLE</option>
+                            <option value="OCCUPIED" ${r.status === 'OCCUPIED' ? 'selected' : ''}>OCCUPIED</option>
+                            <option value="MAINTENANCE" ${r.status === 'MAINTENANCE' ? 'selected' : ''}>MAINTENANCE</option>
+                        </select>
+                    </td>
+                    <td class="py-3 px-4">
+                        <button onclick="handleAdminDeleteRoom(${r.roomId})" class="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded text-xs font-semibold">Delete</button>
+                    </td>
+                </tr>
+            `).join("");
+
+            // Bookings Table
+            const bookingsTbody = document.getElementById("admin-bookings-tbody");
+            if (db.bookings.length === 0) {
+                bookingsTbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-500">No reservations recorded yet.</td></tr>`;
+            } else {
+                bookingsTbody.innerHTML = db.bookings.map(b => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="py-3 px-4 font-bold">#BK-${b.bookingId}</td>
+                        <td class="py-3 px-4">${b.customerName}</td>
+                        <td class="py-3 px-4">#${b.roomNumber} (${b.roomCategory})</td>
+                        <td class="py-3 px-4">${b.checkIn} to ${b.checkOut}</td>
+                        <td class="py-3 px-4 font-semibold">₹${b.totalAmount.toLocaleString()}</td>
+                        <td class="py-3 px-4">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-bold ${b.bookingStatus === 'CONFIRMED' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                                ${b.bookingStatus}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 flex gap-2">
+                            <button onclick="openReceiptModal(${b.bookingId})" class="px-2.5 py-1 bg-navy-800 text-white rounded text-xs">Receipt</button>
+                            ${b.bookingStatus === 'CONFIRMED'
+                                ? `<button onclick="cancelReservation(${b.bookingId})" class="px-2.5 py-1 bg-rose-600 text-white rounded text-xs">Cancel</button>`
+                                : ''}
+                        </td>
+                    </tr>
+                `).join("");
+            }
+
+            // Customers Table
+            document.getElementById("admin-customers-tbody").innerHTML = customers.map(c => `
+                <tr class="hover:bg-slate-50">
+                    <td class="py-3 px-4 font-mono text-xs">#${c.userId}</td>
+                    <td class="py-3 px-4 font-semibold">${c.fullName}</td>
+                    <td class="py-3 px-4">${c.email}</td>
+                    <td class="py-3 px-4">${c.phone}</td>
+                    <td class="py-3 px-4">${c.address}</td>
+                    <td class="py-3 px-4">
+                        <button onclick="handleAdminDeleteCustomer(${c.userId})" class="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded text-xs font-semibold">Remove</button>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        function handleAdminAddRoom(e) {
+            e.preventDefault();
+            const roomNumber = document.getElementById("new-room-num").value.trim();
+            const category = document.getElementById("new-room-cat").value;
+            const pricePerNight = parseFloat(document.getElementById("new-room-price").value);
+            const status = document.getElementById("new-room-status").value;
+            const description = document.getElementById("new-room-desc").value.trim();
+
+            if (db.rooms.some(r => r.roomNumber === roomNumber)) {
+                showToast(`Room #${roomNumber} already exists.`, "error");
+                return;
+            }
+
+            const categoryImages = {
+                "Single Room": "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=800&q=80",
+                "Double Room": "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80",
+                "Deluxe Room": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80",
+                "Suite Room": "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800&q=80"
+            };
+
+            db.rooms.push({
+                roomId: Date.now(),
+                roomNumber,
+                category,
+                pricePerNight,
+                status,
+                description,
+                imageUrl: categoryImages[category]
+            });
+
+            saveDB();
+            e.target.reset();
+            showToast(`Room #${roomNumber} added to inventory.`);
+            renderAdminDashboard();
+        }
+
+        function handleAdminUpdateRoomStatus(roomId, newStatus) {
+            const room = db.rooms.find(r => r.roomId === roomId);
+            if (room) {
+                room.status = newStatus;
+                saveDB();
+                showToast(`Room #${room.roomNumber} status updated to ${newStatus}.`);
+                renderAdminDashboard();
+            }
+        }
+
+        function handleAdminDeleteRoom(roomId) {
+            db.rooms = db.rooms.filter(r => r.roomId !== roomId);
+            saveDB();
+            showToast("Room removed from inventory.");
+            renderAdminDashboard();
+        }
+
+        function handleAdminDeleteCustomer(userId) {
+            db.users = db.users.filter(u => u.userId !== userId);
+            saveDB();
+            showToast("Customer record removed.");
+            renderAdminDashboard();
+        }
+
+        // Initialize App
+        document.addEventListener("DOMContentLoaded", () => {
+            updateNavbarAuth();
+            renderRoomsCatalog();
+        });
+    </script>
+</body>
+</html>
